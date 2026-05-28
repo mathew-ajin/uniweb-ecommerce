@@ -1,3 +1,4 @@
+"use client"
 import { useRouter } from "next/navigation";
 import { useCheckout } from "@/context/CheckoutContext";
 import { useLocale } from "@/hooks/useLocale";

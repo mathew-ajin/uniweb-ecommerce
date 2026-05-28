@@ -1,3 +1,4 @@
+"use client"
 import { useState, useEffect, useCallback, useRef } from 'react';
 
 import { Package, ChevronUp, ChevronDown, X } from 'lucide-react';
@@ -6,6 +7,7 @@ import { useLocale } from '@/hooks/useLocale';
 import { useTrackingPopup } from '@/context/TrackingPopupContext';
 import logoImg from "@/public/assets/company/logo.png";
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 const FloatingTrackingBar = () => {
   const { lang } = useLocale();
@@ -41,7 +43,7 @@ const FloatingTrackingBar = () => {
   }, [handleScroll]);
 
   useEffect(() => {
-    if (!isOpen) setError('');
+    setTimeout(() => setError(''), 0);
   }, [isOpen]);
 
   const handleTrack = () => {
@@ -80,12 +82,7 @@ const FloatingTrackingBar = () => {
             <div className="bg-card border border-border rounded-2xl shadow-xl p-5">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2.5">
-                  <img
-                    src={typeof logoImg === "string" ? logoImg : logoImg.src}
-                    alt="Uniweb"
-                    className="h-6 w-auto"
-                    loading="eager"
-                  />
+                  <Image src={logoImg} alt="Uniweb" width={24} height={24} className="h-6 w-auto" loading="eager" priority />
                   <h3 className="text-sm font-semibold text-foreground font-display">
                     {isAr ? "تتبع الطرد" : "Track Package"}
                   </h3>

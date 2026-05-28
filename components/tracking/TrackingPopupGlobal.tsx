@@ -2,53 +2,44 @@ import { useTrackingPopup } from "@/context/TrackingPopupContext";
 import { useLocale } from "@/hooks/useLocale";
 import logoImg from "@/public/assets/company/logo.png";
 import { AnimatePresence, motion } from "framer-motion";
-import { Package, X } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import Image from "next/image";
+import { X } from "lucide-react";
+import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
-/* Preload logo so it never flickers */
-// const preloadLink = document.createElement('link');
-// preloadLink.rel = 'preload';
-// preloadLink.as = 'image';
-// preloadLink.href = typeof logoImg === 'string' ? logoImg : logoImg.src;
-// document.head.appendChild(preloadLink);
-
-/**
- * On non-home pages, renders the same expandable Track Package panel
- * (identical to the Home page FloatingTrackingBar concept) at bottom-center.
- * Hidden by default; opened only via announcement bar "Order Tracking" trigger.
- */
 const TrackingPopupGlobal = () => {
   const { lang } = useLocale();
+  const { isOpen, close } = useTrackingPopup();
   const router = useRouter();
   const pathname = usePathname();
-  const { isOpen, close } = useTrackingPopup();
+  const isAr = lang === "ar";
+  const isHome = pathname === "/";
+
   const [mobile, setMobile] = useState("");
   const [trackingId, setTrackingId] = useState("");
   const [error, setError] = useState("");
   const panelRef = useRef<HTMLDivElement>(null);
-  const isAr = lang === "ar";
-  const isHome = pathname === "/";
 
+  // Preload logo image
   useEffect(() => {
     const preloadLink = document.createElement("link");
-
     preloadLink.rel = "preload";
     preloadLink.as = "image";
     preloadLink.href = typeof logoImg === "string" ? logoImg : logoImg.src;
-
     document.head.appendChild(preloadLink);
-
     return () => {
       document.head.removeChild(preloadLink);
     };
   }, []);
 
+  // Reset error when popup closes
   useEffect(() => {
-    if (!isOpen) setError("");
+    if (!isOpen) {
+      setTimeout(() => setError(""), 0);
+    }
   }, [isOpen]);
 
-  // Click outside to close
+  // Close on outside click if not home
   useEffect(() => {
     if (!isOpen || isHome) return;
     const handler = (e: MouseEvent) => {
@@ -60,7 +51,7 @@ const TrackingPopupGlobal = () => {
     return () => document.removeEventListener("mousedown", handler);
   }, [isOpen, isHome, close]);
 
-  // On home page, FloatingTrackingBar handles everything
+  // If on home page, rely on FloatingTrackingBar
   if (isHome) return null;
 
   const handleTrack = () => {
@@ -78,9 +69,8 @@ const TrackingPopupGlobal = () => {
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-md">
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-md" ref={panelRef}>
           <motion.div
-            ref={panelRef}
             initial={{ opacity: 0, y: 30, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 30, scale: 0.97 }}
@@ -89,12 +79,7 @@ const TrackingPopupGlobal = () => {
             <div className="bg-card border border-border rounded-2xl shadow-xl p-5">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2.5">
-                  <img
-                    src={typeof logoImg === "string" ? logoImg : logoImg.src}
-                    alt="Uniweb"
-                    className="h-6 w-auto"
-                    loading="eager"
-                  />
+                  <Image src={logoImg} alt="Uniweb" className="h-6 w-auto" loading="eager" priority={true} />
                   <h3 className="text-sm font-semibold text-foreground font-display">
                     {isAr ? "تتبع الطرد" : "Track Package"}
                   </h3>

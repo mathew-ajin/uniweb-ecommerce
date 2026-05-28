@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import  Link  from 'next/link';
-import { Package, Download, Eye, MapPin } from 'lucide-react';
+import { Package, Download, MapPin } from 'lucide-react';
 import { useLocale } from '@/hooks/useLocale';
 import { getOrderHistory } from '@/services/api/orderService';
 import { downloadInvoice } from '@/services/invoiceService';
 import type { OrderRecord } from '@/types/order';
+import Image from 'next/image';
 
 const statusColors: Record<string, string> = {
   confirmed: 'bg-blue-100 text-blue-700',
@@ -67,7 +68,7 @@ const AccountOrders = () => {
               {order.items.slice(0, 3).map((item, i) => (
                 <div key={i} className="flex items-center gap-3">
                   <div className="w-14 h-14 rounded-lg bg-secondary overflow-hidden flex-shrink-0">
-                    <img src={item.image} alt={lang === 'ar' ? item.name.ar : item.name.en} className="w-full h-full object-cover" />
+                      <Image src={item.image} alt={lang === 'ar' ? item.name.ar : item.name.en} width={56} height={56} className="w-full h-full object-cover" loading="lazy" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-foreground truncate">{lang === 'ar' ? item.name.ar : item.name.en}</p>
