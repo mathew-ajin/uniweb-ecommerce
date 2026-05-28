@@ -15,11 +15,11 @@ const ProductGallery = ({ images, selectedColorId }: ProductGalleryProps) => {
 
   // Auto-navigate to color-specific image when color changes
   useEffect(() => {
-    if (selectedColorId) {
-      const idx = images.findIndex(img => img.colorId === selectedColorId);
-      if (idx >= 0) setActive(idx);
-    }
-  }, [selectedColorId, images]);
+  if (selectedColorId) {
+    const idx = images.findIndex(img => img.colorId === selectedColorId);
+    if (idx >= 0) setTimeout(() => setActive(idx), 0);
+  }
+}, [selectedColorId, images]);
 
   const prev = () => setActive(i => (i - 1 + images.length) % images.length);
   const next = () => setActive(i => (i + 1) % images.length);

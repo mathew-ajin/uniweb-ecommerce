@@ -6,7 +6,7 @@ import { getOrderHistory } from '@/services/api/orderService';
 import { loadAddresses } from '@/data/mock/accountData';
 import { useRecentlyViewed } from '@/hooks/useRecentlyViewed';
 import { useEffect, useState } from 'react';
-
+import { LucideIcon } from "lucide-react";
 type AccountSection =
   | "dashboard"
   | "profile"
@@ -21,7 +21,19 @@ type AccountSection =
 interface Props {
   onNavigate: (section: AccountSection) => void;
 }
+type CardItem = {
+  icon: LucideIcon;
+  label: string;
+  value: number;
+  section: AccountSection;
+  color: string;
+};
 
+type QuickActionItem = {
+  icon: LucideIcon;
+  label: string;
+  section: AccountSection;
+};
 const AccountDashboard = ({ onNavigate }: Props) => {
   const { user } = useAuth();
   const { count: wishlistCount } = useWishlist();
@@ -48,13 +60,7 @@ const AccountDashboard = ({ onNavigate }: Props) => {
   //   { icon: Heart, label: t('Manage Wishlist', 'إدارة المفضلة'), section: 'wishlist' },
   //   { icon: Package, label: t('Track Order', 'تتبع طلب'), section: 'tracking' },
   // ];
-  const cards: {
-    icon: any;
-    label: string;
-    value: number;
-    section: AccountSection;
-    color: string;
-  }[] = [
+  const cards: CardItem[] = [
     {
       icon: ShoppingBag,
       label: t("Total Orders", "إجمالي الطلبات"),
@@ -85,11 +91,7 @@ const AccountDashboard = ({ onNavigate }: Props) => {
     },
   ];
 
-  const quickActions: {
-    icon: any;
-    label: string;
-    section: AccountSection;
-  }[] = [
+  const quickActions: QuickActionItem[] = [
     { icon: Eye, label: t("View Orders", "عرض الطلبات"), section: "orders" },
     { icon: Edit, label: t("Edit Profile", "تعديل الحساب"), section: "profile" },
     { icon: Heart, label: t("Manage Wishlist", "إدارة المفضلة"), section: "wishlist" },
